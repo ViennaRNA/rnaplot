@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+This is an RNA container.
+<div id='rna_ss'> </div>
+This after the RNA container.
+
+    <script type='text/javascript' src='js/d3.js'></script>
+
+    <script type='text/javascript' src='src/simplernaplot.js'></script>
+    <script type='text/javascript' src='src/rnautils.js'></script>
+    <script type='text/javascript' src='src/rnagraph.js'></script>
+
+    <script type='text/javascript' src='src/rnaPlotCore.js'></script>
+
+    <script type='text/javascript'>
+        var rna1 = {'structure': '((..((....)).(((....))).))',
+                    'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU'
+        };
+
+        var rna2 = {'structure': '((....)).................',
+                    'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU'
+        };
+        
+        var svgWidth = 800;
+        var svgHeight = 800;
+
+        var chart = rnaPlot().height(svgHeight).width(svgWidth).labelInterval(5);
+
+        var svg = d3.select("#rna_ss")
+        .append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
+        .attr('border', 'black')
+
+        svg.append('svg:rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
+        .attr('opacity', 0.1);
+
+        svg.selectAll('.rna')
+        .data([rna1])
+        .enter()
+        .append('g')
+        .classed('rna', true)
+        .call(chart);
+    </script>
