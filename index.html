@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+ <link rel='stylesheet' type='text/css' href='css/rnaPlot.css' />
 
 This is an RNA container.
 <div id='rna_ss'> </div>
@@ -21,9 +22,17 @@ This after the RNA container.
         var rna2 = {'structure': '((....)).................',
                     'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU'
         };
+
+        var rna3 = {'structure': '(((....)))',
+                    'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU'
+        };
+
+        var rna4 = {'structure': '((((....))))',
+                    'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU'
+        };
         
-        var svgWidth = 800;
-        var svgHeight = 800;
+        var svgWidth = 400;
+        var svgHeight = 400;
 
         var chart = rnaPlot().height(svgHeight).width(svgWidth).labelInterval(5);
 
@@ -41,7 +50,7 @@ This after the RNA container.
         .attr('opacity', 0.1);
 
         svg.selectAll('.rna')
-        .data([rna1])
+        .data([rna3])
         .enter()
         .append('g')
         .classed('rna', true)
