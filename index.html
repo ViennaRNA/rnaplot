@@ -34,7 +34,11 @@ This after the RNA container.
         var svgWidth = 400;
         var svgHeight = 400;
 
-        var chart = rnaPlot().height(svgHeight).width(svgWidth).labelInterval(5);
+        var chart = rnaPlot()
+        .height(svgHeight)
+        .width(svgWidth)
+        .labelInterval(5)
+        .rnaEdgePadding(3);
 
         var svg = d3.select("#rna_ss")
         .append('svg')

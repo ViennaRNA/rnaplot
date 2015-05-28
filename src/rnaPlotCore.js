@@ -7,8 +7,9 @@ function rnaPlot() {
     uids = [];
 
     var options = {
-        "origNucleotideRadius": 5,
-        "rnaEdgePadding": 3
+        "nucleotideRadius": 5,
+        "rnaEdgePadding": 0     // how far the leftmost, rightmost, topmost and bottomost
+                                // nucleotides are from the edge of the plot
     };
 
     function createTransformToFillViewport(xValues, yValues) {
@@ -23,12 +24,11 @@ function rnaPlot() {
         console.log('xs:', rg.nodes.map(function(d) { return d.x; }));
 
         // add the radius of the nucleotides
-        var origNucleotideRadius = 5;
-        xExtent[0] -= origNucleotideRadius + options.rnaEdgePadding;
-        yExtent[0] -= origNucleotideRadius + options.rnaEdgePadding;
+        xExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
+        yExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
 
-        xExtent[1] += origNucleotideRadius + options.rnaEdgePadding;
-        yExtent[1] += origNucleotideRadius + options.rnaEdgePadding;
+        xExtent[1] += options.nucleotideRadius + options.rnaEdgePadding;
+        yExtent[1] += options.nucleotideRadius + options.rnaEdgePadding;
 
         // find out how wide and height the molecule
         var xRange = xExtent[1] - xExtent[0];
@@ -99,7 +99,7 @@ function rnaPlot() {
         });
 
         var circles = gs.append('svg:circle')
-        .attr('r', options.origNucleotideRadius)
+        .attr('r', options.nucleotideRadius)
         .classed('rnaBase', true)
     }
 
@@ -118,7 +118,7 @@ function rnaPlot() {
         });
 
         var circles = gs.append('svg:circle')
-        .attr('r', options.origNucleotideRadius)
+        .attr('r', options.nucleotideRadius)
         .classed('rnaBase', true)
         .classed('rnaLabel', true)
 
@@ -179,6 +179,18 @@ function rnaPlot() {
     chart.labelInterval = function(_) {
         if (!arguments.length) return labelInterval;
         labelInterval = _;
+        return chart;
+    };
+
+    chart.rnaEdgePadding = function(_) {
+        if (!arguments.length) return options.rnaEdgePadding;
+        options.rnaEdgePadding = _;
+        return chart;
+    };
+
+    chart.nucleotideRadius = function() {
+        if (!arguments.length) return options.nucleotideRadius;
+        options.nucleotideRadius = _;
         return chart;
     };
 
