@@ -101,6 +101,14 @@ function rnaPlot() {
         var circles = gs.append('svg:circle')
         .attr('r', options.nucleotideRadius)
         .classed('rnaBase', true)
+
+        var nucleotideLabels = gs.append('svg:text')
+        .text(function(d) { return d.name; })
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .classed('nucleotide-label', true)
+        .append('svg:title')
+        .text(function(d) { return d.struct_name + ":" + d.num; });
     }
 
     function createLabels(selection, labelNodes) {
@@ -117,11 +125,12 @@ function rnaPlot() {
             return 'translate(' + d.x + ',' + d.y + ')'; 
         });
 
-        var circles = gs.append('svg:circle')
-        .attr('r', options.nucleotideRadius)
-        .classed('rnaBase', true)
-        .classed('rnaLabel', true)
-
+        var numberLabels = gs.append('svg:text')
+        .text(function(d) { return d.name; })
+        .attr('text-anchor', 'middle')
+        .attr('font-weight', 'bold')
+        .attr('dominant-baseline', 'central')
+        .classed('number-label', true)
     }
 
     function chart(selection) {
