@@ -4,6 +4,7 @@ function rnaPlot() {
     labelInterval = 0,
     startNucleotideNumber = 1,
     transitionLength = 0,
+    showNucleotideLabels = true,
     uids = [];
 
     var options = {
@@ -102,13 +103,15 @@ function rnaPlot() {
         .attr('r', options.nucleotideRadius)
         .classed('rnaBase', true)
 
-        var nucleotideLabels = gs.append('svg:text')
-        .text(function(d) { return d.name; })
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'central')
-        .classed('nucleotide-label', true)
-        .append('svg:title')
-        .text(function(d) { return d.struct_name + ":" + d.num; });
+        if (showNucleotideLabels) {
+            var nucleotideLabels = gs.append('svg:text')
+            .text(function(d) { return d.name; })
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .classed('nucleotide-label', true)
+            .append('svg:title')
+            .text(function(d) { return d.struct_name + ":" + d.num; });
+        }
     }
 
     function createLabels(selection, labelNodes) {
@@ -163,6 +166,7 @@ function rnaPlot() {
             var nucleotideNodes = rg.nodes.filter(function(d) { 
                 return d.nodeType == 'nucleotide'; 
             });
+
             var labelNodes = rg.nodes.filter(function(d) {
                 return d.nodeType == 'label';
             });
@@ -190,6 +194,12 @@ function rnaPlot() {
         labelInterval = _;
         return chart;
     };
+
+    chart.showNucleotideLabels = function(_) {
+        if (!arguments.length) return showNucleotideLabels;
+        showNucleotideLabels = _;
+        return chart;
+    }
 
     chart.rnaEdgePadding = function(_) {
         if (!arguments.length) return options.rnaEdgePadding;
