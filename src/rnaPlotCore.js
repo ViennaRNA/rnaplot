@@ -146,6 +146,7 @@ function rnaPlot() {
                     .recalculateElements()
                     .elementsToJson();
 
+            data.rnaGraph = rg;
             // calculate the position of each nucleotide
             // the positions of the labels will be calculated in
             // the addLabels function
