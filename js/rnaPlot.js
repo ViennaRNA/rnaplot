@@ -985,7 +985,7 @@ function rnaPlot() {
     function createNucleotides(selection, nucleotideNodes) {
         // create groupings for each nucleotide and label
         var gs = selection
-        .selectAll('.rnaBase')
+        .selectAll('.rna-base')
         .data(nucleotideNodes)
         .enter()
         .append('svg:g')
@@ -995,7 +995,7 @@ function rnaPlot() {
 
         var circles = gs.append('svg:circle')
         .attr('r', options.nucleotideRadius)
-        .classed('rnaBase', true)
+        .classed('rna-base', true)
 
         if (showNucleotideLabels) {
             var nucleotideLabels = gs.append('svg:text')
