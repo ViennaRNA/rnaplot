@@ -4,6 +4,7 @@ function rnaPlot() {
     labelInterval = 0,
     startNucleotideNumber = 1,
     transitionLength = 0,
+    showNucleotideLabels = true,
     uids = [];
 
     var options = {
@@ -90,7 +91,7 @@ function rnaPlot() {
     function createNucleotides(selection, nucleotideNodes) {
         // create groupings for each nucleotide and label
         var gs = selection
-        .selectAll('.rnaBase')
+        .selectAll('.rna-base')
         .data(nucleotideNodes)
         .enter()
         .append('svg:g')
@@ -100,7 +101,17 @@ function rnaPlot() {
 
         var circles = gs.append('svg:circle')
         .attr('r', options.nucleotideRadius)
-        .classed('rnaBase', true)
+        .classed('rna-base', true)
+
+        if (showNucleotideLabels) {
+            var nucleotideLabels = gs.append('svg:text')
+            .text(function(d) { return d.name; })
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .classed('nucleotide-label', true)
+            .append('svg:title')
+            .text(function(d) { return d.struct_name + ":" + d.num; });
+        }
     }
 
     function createLabels(selection, labelNodes) {
@@ -117,11 +128,12 @@ function rnaPlot() {
             return 'translate(' + d.x + ',' + d.y + ')'; 
         });
 
-        var circles = gs.append('svg:circle')
-        .attr('r', options.nucleotideRadius)
-        .classed('rnaBase', true)
-        .classed('rnaLabel', true)
-
+        var numberLabels = gs.append('svg:text')
+        .text(function(d) { return d.name; })
+        .attr('text-anchor', 'middle')
+        .attr('font-weight', 'bold')
+        .attr('dominant-baseline', 'central')
+        .classed('number-label', true)
     }
 
     function chart(selection) {
@@ -134,6 +146,7 @@ function rnaPlot() {
                     .recalculateElements()
                     .elementsToJson();
 
+            data.rnaGraph = rg;
             // calculate the position of each nucleotide
             // the positions of the labels will be calculated in
             // the addLabels function
@@ -154,6 +167,7 @@ function rnaPlot() {
             var nucleotideNodes = rg.nodes.filter(function(d) { 
                 return d.nodeType == 'nucleotide'; 
             });
+
             var labelNodes = rg.nodes.filter(function(d) {
                 return d.nodeType == 'label';
             });
@@ -181,6 +195,12 @@ function rnaPlot() {
         labelInterval = _;
         return chart;
     };
+
+    chart.showNucleotideLabels = function(_) {
+        if (!arguments.length) return showNucleotideLabels;
+        showNucleotideLabels = _;
+        return chart;
+    }
 
     chart.rnaEdgePadding = function(_) {
         if (!arguments.length) return options.rnaEdgePadding;

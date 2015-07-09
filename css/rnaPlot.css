@@ -58,7 +58,16 @@ line.fake {
     pointer-events: none;
           }
 
-text.node-label {
+text.nucleotide-label {
+    font-size: 5.5pt;
+    font-weight: bold;
+    font-family: Tahoma, Geneva, sans-serif;
+    color: rgb(100,100,100);
+    pointer-events: none;
+}
+
+text.number-label {
+    font-size: 4pt;
     font-weight: bold;
     font-family: Tahoma, Geneva, sans-serif;
     color: rgb(100,100,100);
