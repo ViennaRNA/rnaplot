@@ -1,1 +1,1 @@
-/home/mescalin/pkerp/projects/fornac/src/rnautils.js
+/Users/pkerp/projects/fornac/src/rnautils.js

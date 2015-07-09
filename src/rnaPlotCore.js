@@ -137,7 +137,7 @@ function rnaPlot() {
             // calculate the position of each nucleotide
             // the positions of the labels will be calculated in
             // the addLabels function
-            var positions = simple_xy_coordinates(rg.pairtable);
+            var positions = simpleXyCoordinates(rg.pairtable);
             rg.addPositions('nucleotide', positions)
             .addLabels(startNucleotideNumber, labelInterval);
 
@@ -188,9 +188,21 @@ function rnaPlot() {
         return chart;
     };
 
-    chart.nucleotideRadius = function() {
+    chart.nucleotideRadius = function(_) {
         if (!arguments.length) return options.nucleotideRadius;
         options.nucleotideRadius = _;
+        return chart;
+    };
+
+    chart.labelInterval = function(_) {
+        if (!arguments.length) return options.labelInterval;
+        options.labelInterval = _;
+        return chart;
+    };
+
+    chart.showNucleotideLabels = function(_) {
+        if (!arguments.length) return options.showNucleotideLabels;
+        options.showNucleotideLabels = _;
         return chart;
     };
 

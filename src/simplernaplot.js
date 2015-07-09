@@ -1,1 +1,1 @@
-/home/mescalin/pkerp/projects/fornac/src/simplernaplot.js
+/Users/pkerp/projects/fornac/src/simplernaplot.js
