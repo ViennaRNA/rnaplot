@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
- <link rel='stylesheet' type='text/css' href='css/rnaPlot.css' />
+ <link rel='stylesheet' type='text/css' href='css/d3-rnaplot.css' />
 
 This is an RNA container.
 <div id='rna_ss'> </div>
@@ -8,7 +8,7 @@ This after the RNA container.
 
     <script type='text/javascript' src='js/d3.js'></script>
 
-    <script type='text/javascript' src='js/rnaPlot.js'></script>
+    <script type='text/javascript' src='js/d3-rnaplot.js'></script>
 
     <script type='text/javascript'>
         var rna1 = {'structure': '((..((....)).(((....))).))',
@@ -27,8 +27,8 @@ This after the RNA container.
                     'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU'
         };
         
-        var svgWidth = 400;
-        var svgHeight = 400;
+        var svgWidth = 200;
+        var svgHeight = 200;
 
         var chart = rnaPlot()
         .height(svgHeight)
@@ -48,11 +48,11 @@ This after the RNA container.
         .attr('y', 0)
         .attr('width', svgWidth)
         .attr('height', svgHeight)
-        .attr('fill', 'red')
+        .attr('fill', 'white')
         .attr('opacity', 0.1);
 
         svg.selectAll('.rna')
-        .data([rna3])
+        .data([rna1])
         .enter()
         .append('g')
         .classed('rna', true)
