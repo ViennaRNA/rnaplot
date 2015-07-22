@@ -47,3 +47,21 @@ svg.selectAll('.rna')
 Like this:
 
 ![Screenshot of a simple rna-plot](/doc/img/simple-rnaplot-example.png?raw=true "Simple rna-plot example")
+
+#### Adding nucleotide number labels ####
+
+```
+var chart = rnaPlot()
+.width(svgWidth)
+.height(svgHeight)
+.labelInterval(10);
+```
+
+![Showing nucleotide numbers](/doc/img/show-nucleotide-numbers.png?raw=true "Show nucleotide numbers")
+
+
+#### Stupid Compiling ####
+
+```
+cat src/*.js > js/d3-rnaplot.js
+```

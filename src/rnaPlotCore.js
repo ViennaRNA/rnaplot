@@ -1,16 +1,13 @@
 function rnaPlot() {
-    var width = 400,
-    height = 400,
-    labelInterval = 0,
-    startNucleotideNumber = 1,
-    transitionLength = 0,
-    showNucleotideLabels = true,
-    uids = [];
-
     var options = {
+        "width": 400,
+        "height": 400,
         "nucleotideRadius": 5,
-        "rnaEdgePadding": 0     // how far the leftmost, rightmost, topmost and bottomost
+        "rnaEdgePadding": 0,     // how far the leftmost, rightmost, topmost and bottomost
                                 // nucleotides are from the edge of the plot
+        "labelInterval": 0,
+        "showNucleotideLabels": true,
+        "startNucleotideNumber": 1
     };
 
     function createTransformToFillViewport(xValues, yValues) {
@@ -36,8 +33,8 @@ function rnaPlot() {
         var yRange = yExtent[1] - yExtent[0];
 
         // how much wider / taller is it than the available viewport
-        var xExtra = xRange - width;
-        var yExtra = yRange - height;
+        var xExtra = xRange - options.width;
+        var yExtra = yRange - options.height;
 
         var xScale, yScale;
 
@@ -66,17 +63,17 @@ function rnaPlot() {
             // we have to shrink more in the x-dimension than the y
             xScale = d3.scale.linear()
             .domain(xExtent)
-            .range([0, width])
+            .range([0, options.width])
 
-            ret = createOtherScale(xScale, yExtent, [0, height]);
+            ret = createOtherScale(xScale, yExtent, [0, options.height]);
             yScale = ret.scale;
         } else {
             // we have to shrink more in the x-dimension than the y
             yScale = d3.scale.linear()
             .domain(yExtent)
-            .range([0, height])
+            .range([0, options.height])
 
-            ret = createOtherScale(yScale, xExtent, [0, width]);
+            ret = createOtherScale(yScale, xExtent, [0, options.width]);
             xScale = ret.scale;
         }
 
@@ -103,7 +100,7 @@ function rnaPlot() {
         .attr('r', options.nucleotideRadius)
         .classed('rna-base', true)
 
-        if (showNucleotideLabels) {
+        if (options.showNucleotideLabels) {
             var nucleotideLabels = gs.append('svg:text')
             .text(function(d) { return d.name; })
             .attr('text-anchor', 'middle')
@@ -152,7 +149,9 @@ function rnaPlot() {
             // the addLabels function
             var positions = simpleXyCoordinates(rg.pairtable);
             rg.addPositions('nucleotide', positions)
-            .addLabels(startNucleotideNumber, labelInterval);
+            .addLabels(options.startNucleotideNumber, options.labelInterval);
+
+            console.log('rg:', rg);
 
             // create a transform that will fit the molecule to the
             // size of the viewport (canvas, svg, whatever)
@@ -179,26 +178,20 @@ function rnaPlot() {
     }
 
     chart.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
+        if (!arguments.length) return options.width;
+        options.width = _;
         return chart;
     };
 
     chart.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return chart;
-    };
-
-    chart.labelInterval = function(_) {
-        if (!arguments.length) return labelInterval;
-        labelInterval = _;
+        if (!arguments.length) return options.height;
+        options.height = _;
         return chart;
     };
 
     chart.showNucleotideLabels = function(_) {
-        if (!arguments.length) return showNucleotideLabels;
-        showNucleotideLabels = _;
+        if (!arguments.length) return options.showNucleotideLabels;
+        options.showNucleotideLabels = _;
         return chart;
     }
 
