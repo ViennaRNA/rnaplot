@@ -59,6 +59,21 @@ var chart = rnaPlot()
 
 ![Showing nucleotide numbers](/doc/img/show-nucleotide-numbers.png?raw=true "Show nucleotide numbers")
 
+#### Change the starting nucleotide number ####
+
+Specify the number of the first nucleotide so that the
+labelling is changed accordingly.
+
+```
+var chart = rnaPlot()
+.width(svgWidth)
+.height(svgHeight)
+.startNucleotideNumber(7)
+.labelInterval(5)
+```
+
+![Changed starting nucleotide number](/doc/img/start-nucleotide-number.png?raw=true "Changed starting nucleotide number")
+
 
 #### Stupid Compiling ####
 

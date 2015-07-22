@@ -219,5 +219,11 @@ function rnaPlot() {
         return chart;
     };
 
+    chart.startNucleotideNumber = function(_) {
+        if (!arguments.length) return options.startNucleotideNumber;
+        options.startNucleotideNumber = _;
+        return chart;
+    }
+
     return chart;
 }
