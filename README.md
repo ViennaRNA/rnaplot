@@ -2,7 +2,8 @@
 
 For a live example, simply load the `index.html` file.
 
-Otherwise, the procedure is simple.
+Otherwise, the following code will display an rna
+diagram of the structure `((..((....)).(((....))).))`.
 
 ```
     var svgWidth = 200;
@@ -29,3 +30,7 @@ Otherwise, the procedure is simple.
     .classed('rna', true)
     .call(chart);
 ```
+
+Like this:
+
+![Screenshot of a simple rna-plot](/doc/img/simple-rnaplot-example.png?raw=true "Simple rna-plot example")
