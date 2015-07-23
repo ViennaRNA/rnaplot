@@ -74,6 +74,13 @@ var chart = rnaPlot()
 
 ![Changed starting nucleotide number](/doc/img/start-nucleotide-number.png?raw=true "Changed starting nucleotide number")
 
+#### Create a treemap with embedded RNA structures ####
+
+We can use the RNA layout and embed it in different places, such as a treemap.
+The code for this example can be found under `examples/rna-treemap.html`
+
+![Treemap with embedded RNAs](/doc/img/start-nucleotide-number.png?raw=true "Treemap with embedded RNAs")
+
 
 #### Stupid Compiling ####
 

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+.structure-background-rect {
+    stroke: black;
+    stroke-width: 1;
+    fill: transparent;
+}
+</style>
+
+<div id='rna_ss'> </div>
+
+<script type='text/javascript' src='/js/d3.min.js'></script>
+<script type='text/javascript' src='/js/d3-rnaplot.js'></script>
+<script type='text/javascript'>
+
+var svgWidth = 300;
+var svgHeight = 300;
+
+var root = {'name': 'graph', 
+             'children': [{'structure': '((..((....)).(((....))).))',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 50},
+             {'structure': '((...........(((....))).))',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 40},
+             {'structure': '..........................',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 20}
+             ]
+};
+
+
+    var svg = d3.select('#rna_ss')
+    .append('svg')
+    .attr('width', svgWidth)
+    .attr('height', svgHeight)
+
+
+    var treemap = d3.layout.treemap()
+    .size([svgWidth, svgHeight])
+    .sticky(false)
+    .value(function(d) { return d.size; });
+
+    function rnaTreemapNode(selection) {
+            // create a background rectangle for each RNA structure
+        selection.each(function(d) {
+            d3.select(this)
+            .attr('transform', function(d) { return 'translate(' + d.x + "," + d.y + ')' })
+                    .append('rect')
+                    .classed('structure-background-rect', true)
+                    .attr("width", function(d) { return Math.max(0, d.dx); })
+                    .attr("height", function(d) { return Math.max(0, d.dy); })
+
+                    var chart = rnaPlot()
+                    .width( Math.max(0, d.dx))
+                    .height( Math.max(0, d.dy))
+                    .labelInterval(0)
+                    .rnaEdgePadding(10)
+                    .showNucleotideLabels(false);
+
+                    if ('structure' in d) d3.select(this).call(chart)
+                
+        });
+    }
+
+    var treemapGnodes = svg.datum(root).selectAll(".treemapNode")
+    .data(treemap.nodes)
+    .enter()
+    .append('g')
+    .attr('class', 'treemapNode')
+    .call(rnaTreemapNode);
+</script>
+
