@@ -79,7 +79,7 @@ var chart = rnaPlot()
 We can use the RNA layout and embed it in different places, such as a treemap.
 The code for this example can be found under `examples/rna-treemap.html`
 
-![Treemap with embedded RNAs](/doc/img/start-nucleotide-number.png?raw=true "Treemap with embedded RNAs")
+![Treemap with embedded RNAs](/doc/img/rna-treemap.png?raw=true "Treemap with embedded RNAs")
 
 
 #### Stupid Compiling ####
