@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+.structure-background-rect {
+    stroke: black;
+    stroke-width: 1;
+    fill: transparent;
+}
+</style>
+
+<div id='rna_ss'> </div>
+
+<script type='text/javascript' src='/js/d3.min.js'></script>
+<script type='text/javascript' src='/js/d3-rnaplot.js'></script>
+<script type='text/javascript' src='/js/d3-rna-treemap.js'></script>
+<script type='text/javascript'>
+
+var svgWidth = 300;
+var svgHeight = 300;
+
+var root = [
+{'name': 'graph', 
+             'children': [{'structure': '((..((....)).(((....))).))',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 50},
+             {'structure': '((...........(((....))).))',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 40},
+             {'structure': '..........................',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 20}
+             ]
+},
+{'name': 'graph', 
+             'children': [{'structure': '...........(((((.....)))))..',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 50},
+             {'structure': '(((((((......)))).))).......',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 10}
+             ]
+}
+];
+
+var rnaTreemap = rnaTreemapChart()
+    .width(200)
+    .height(100);
+
+d3.select('#rna_ss')
+.append('svg')
+.datum(root[0])
+.call(rnaTreemap);
+
+</script>
+
