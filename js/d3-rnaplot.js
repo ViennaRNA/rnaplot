@@ -911,8 +911,6 @@ function rnaPlot() {
         var xExtent = d3.extent(rg.nodes.map(function(d) { return d.x; })) 
         var yExtent = d3.extent(rg.nodes.map(function(d) { return d.y; })) 
 
-        console.log('xs:', rg.nodes.map(function(d) { return d.x; }));
-
         // add the radius of the nucleotides
         xExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
         yExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
@@ -938,8 +936,6 @@ function rnaPlot() {
             var newWidth = (newDomain[1] - newDomain[0]) * scaleFactor
             var newMargin = ((newRange[1] - newRange[0]) - newWidth) / 2;
 
-            console.log('scaleFactor', scaleFactor);
-
             return {"scaleFactor": scaleFactor, 
                     "scale": d3.scale.linear()
                                      .domain(newDomain)
@@ -947,9 +943,6 @@ function rnaPlot() {
         }
 
         var ret;
-
-        console.log('xRange:', xExtent, 'yRange:', yExtent);
-        console.log('xExtra:', xExtra, 'yExtra:', yExtra);
 
         if (xExtra > yExtra) {
             // we have to shrink more in the x-dimension than the y
@@ -1006,8 +999,6 @@ function rnaPlot() {
     function createLabels(selection, labelNodes) {
         // create groupings for each nucleotide and label
 
-        console.log('labelNodes', labelNodes)
-
         var gs = selection 
         .selectAll('.rnaLabel')
         .data(labelNodes)
@@ -1026,11 +1017,9 @@ function rnaPlot() {
     }
 
     function chart(selection) {
-        console.log('selection', selection)
         selection.each(function(data) {
             // data should be a dictionary containing at least a structure
             // and possibly a sequence
-            console.log('data', data)
             rg = new RNAGraph(data.sequence, data.structure, data.name)
                     .recalculateElements()
                     .elementsToJson();
@@ -1042,8 +1031,6 @@ function rnaPlot() {
             var positions = simpleXyCoordinates(rg.pairtable);
             rg.addPositions('nucleotide', positions)
             .addLabels(options.startNucleotideNumber, options.labelInterval);
-
-            console.log('rg:', rg);
 
             // create a transform that will fit the molecule to the
             // size of the viewport (canvas, svg, whatever)
