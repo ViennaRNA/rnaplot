@@ -48,8 +48,9 @@ var rnaTreemap = rnaTreemapChart()
     .height(100);
 
 d3.select('#rna_ss')
+.data(root)
+.enter()
 .append('svg')
-.datum(root[0])
 .call(rnaTreemap);
 
 </script>
