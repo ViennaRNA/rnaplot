@@ -73,3 +73,14 @@ function rnaTreemapChart() {
 
     return chart;
 }
+
+function rnaTreemapGridChart() {
+    var chart = function(selection) {
+        console.log('selection:', selection);
+       selection.each(function(data) {
+           console.log('data:', data);
+       });
+    }
+
+    return chart;
+}

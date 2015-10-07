@@ -47,10 +47,13 @@ var rnaTreemap = rnaTreemapChart()
     .width(200)
     .height(100);
 
+var rnaTreemapGrid = rnaTreemapGridChart();
+
 d3.select('#rna_ss')
 .append('svg')
-.datum(root[0])
-.call(rnaTreemap);
+.selectAll('g')
+.data(root)
+.call(rnaTreemapGrid);
 
 </script>
 
