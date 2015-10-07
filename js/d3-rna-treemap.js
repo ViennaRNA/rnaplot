@@ -27,6 +27,7 @@ function rnaTreemapChart() {
 
     var chart = function(selection) {
         selection.each(function(data) {
+            console.log('data:', data)
             // initialize the treemap structure
             // sample input
             // { 'name': 'blah',
@@ -39,17 +40,11 @@ function rnaTreemapChart() {
             .sticky(false)
             .value(function(d) { return d.size; });
 
-            // create an svg element
-            var svg = d3.select(this).selectAll("svg").data([data]);
-            // Otherwise, create the skeletal chart.
-            var gEnter = svg.enter().append("svg")
-            .attr('width', width)
-            .attr('height', height)
-            .append("g");
-
-
             // create a new <g> for each node in the treemap
-            var treemapGnodes = gEnter.datum(root[0]).selectAll(".treemapNode")
+            // this may be a little redundant, since we expect the calling
+            // selection to contain their own g elements
+            var gEnter = d3.select(this).append('g');
+            var treemapGnodes = gEnter.datum(data).selectAll(".treemapNode")
             .data(treemap.nodes)
             .enter()
             .append('g')

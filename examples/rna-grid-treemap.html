@@ -14,10 +14,9 @@
 <script type='text/javascript' src='/js/d3.min.js'></script>
 <script type='text/javascript' src='/js/d3-rnaplot.js'></script>
 <script type='text/javascript' src='/js/d3-rna-treemap.js'></script>
+<script type='text/javascript' src='/js/lib/d3-grid.js'></script>
 <script type='text/javascript'>
 
-var svgWidth = 300;
-var svgHeight = 300;
 
 var root = [
 {'name': 'graph', 
@@ -40,17 +39,66 @@ var root = [
             'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
             'size': 10}
              ]
+},
+{'name': 'graph', 
+             'children': [{'structure': '...........(((((.....)))))..',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 50},
+             {'structure': '(((((((......)))).))).......',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 10}
+             ]
+},
+{'name': 'graph', 
+             'children': [{'structure': '...........(((((.....)))))..',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 50},
+             {'structure': '(((((((......)))).))).......',
+            'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
+            'size': 10}
+             ]
 }
 ];
 
-var rnaTreemap = rnaTreemapChart()
-    .width(200)
-    .height(100);
 
+// set all of the parameters
+var padding = [10,10];
+var treemapWidth = 160;
+var treemapHeight = 160;
+var svgWidth = 550;
+
+// calculate the number of columns and the height of the SVG,
+// which is dependent on the on the number of data points
+var numCols = Math.floor((svgWidth + padding[0]) / (treemapWidth + padding[0]));
+var svgHeight = Math.ceil(root.length / numCols) * (treemapHeight + padding[1]) - padding[1];
+
+// the rna treemap layout, which will be called for every grid point
+var rnaTreemap = rnaTreemapChart()
+    .width(treemapWidth)
+    .height(treemapHeight);
+
+// the grid layout that will determine the position of each
+// treemap
+ var rectGrid = d3.layout.grid()
+          .bands()
+          .size([svgWidth, svgHeight])
+          .cols(numCols)
+          .padding(padding)
+          .nodeSize([treemapWidth, treemapHeight]);
+var rectData = rectGrid(root)
+
+// create an svg as a child of the #rna_ss div
+// and then a g for each grid cell
 d3.select('#rna_ss')
-.data(root)
-.enter()
 .append('svg')
+.attr('width', svgWidth)
+.attr('height', svgHeight)
+.selectAll('.rna-treemap')
+.data(rectData)
+.enter()
+.append('g')
+.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+.classed('rna-treemap', true)
 .call(rnaTreemap);
 
 </script>
