@@ -923,8 +923,8 @@ function rnaPlot() {
         var yRange = yExtent[1] - yExtent[0];
 
         // how much wider / taller is it than the available viewport
-        var xExtra = xRange - options.width;
-        var yExtra = yRange - options.height;
+        var xExtra = xRange / options.width;
+        var yExtra = yRange / options.height;
 
         var xScale, yScale;
 

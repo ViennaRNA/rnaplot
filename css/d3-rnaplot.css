@@ -1,3 +1,9 @@
+.structure-background-rect {
+    stroke: black;
+    stroke-width: 1;
+    fill: transparent;
+}
+
 svg {
   display: block;
   min-width: 100%;
