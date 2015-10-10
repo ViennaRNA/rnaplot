@@ -1,14 +1,7 @@
 .structure-background-rect {
     stroke: black;
-    stroke-width: 1;
+    stroke-width: 5;
     fill: transparent;
-}
-
-svg {
-  display: block;
-  min-width: 100%;
-  width: 100%;
-  min-height: 100%;
 }
 
 circle.rnaBase {
