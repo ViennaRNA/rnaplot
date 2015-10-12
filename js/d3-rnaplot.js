@@ -171,6 +171,7 @@ function ColorScheme(colorsText) {
     };
 
     self.parseColorText(self.colorsText);
+    return self;
 }
 
 function ProteinGraph(structName, size, uid) {
@@ -244,8 +245,10 @@ function RNAGraph(seq, dotbracket, structName) {
     self.nucsToNodes = {};
 
     self.addUids = function(uids) {
-        for (var i = 0; i < uids.length; i++)
-            self.nodes[i].uid = uids[i];
+        var nucleotideNodes = self.nodes.filter(function(d) { return d.nodeType == 'nucleotide'; });
+
+        for (var i = 0; i < uids.length && i < nucleotideNodes.length; i++)
+            nucleotideNodes[i].uid = uids[i];
 
         return self;
     };
@@ -257,7 +260,7 @@ function RNAGraph(seq, dotbracket, structName) {
     self.computePairtable();
 
     self.addPositions = function(nodeType, positions) {
-        labelNodes = self.nodes.filter(function(d) { return d.nodeType == nodeType; });
+        var labelNodes = self.nodes.filter(function(d) { return d.nodeType == nodeType; });
 
         for  (var i = 0; i < labelNodes.length; i++) {
             labelNodes[i].x = positions[i][0];
@@ -382,7 +385,7 @@ function RNAGraph(seq, dotbracket, structName) {
         for (var i = 0; i < nucs.length; i++)
             fakeNodeUid += self.nodes[nucs[i]-1].uid;
 
-        newNode = {'name': '',
+        var newNode = {'name': '',
                          'num': -1,
                          //'radius': 18 * radius -6,
                          'radius': radius,
@@ -403,7 +406,6 @@ function RNAGraph(seq, dotbracket, structName) {
         for (j = 0; j < nucs.length; j++) {
             if (nucs[j] === 0 || nucs[j] > self.dotbracket.length)
                 continue;
-            
 
             //link to the center node
             self.links.push({'source': self.nodes[nucs[j] - 1],
@@ -450,7 +452,6 @@ function RNAGraph(seq, dotbracket, structName) {
         }
 
         return self;
-
     };
 
     self.connectFakeNodes = function() {
@@ -473,7 +474,7 @@ function RNAGraph(seq, dotbracket, structName) {
         for (i = 0; i < fakeNodes.length; i++) {
             var thisNode = fakeNodes[i];
 
-            // each fake node represents a certain set of nucleotdies (thisNode.nucs)
+            // each fake node represents a certain set of nucleotides (thisNode.nucs)
             for (var j = 0; j < thisNode.nucs.length; j++) {
                 var thisNuc = thisNode.nucs[j];
 
@@ -813,9 +814,23 @@ function RNAGraph(seq, dotbracket, structName) {
         return self;
     };
 
+    self.reassignLinkUids = function() {
+        // reassign uids to the links, corresponding to the uids of the two nodes
+        // they connect
+        var i;
+
+        for (i = 0; i < self.links.length; i++) {
+            self.links[i].uid = self.links[i].source.uid + self.links[i].target.uid;
+        }
+
+        return self;
+    }
+
     self.removePseudoknots = function() {
         if (self.pairtable.length > 1)
-            self.pseudoknotPairs = self.pseudoknotPairs.concat(rnaUtilities.removePseudoknotsFromPairtable(self.pairtable));
+            self.pseudoknotPairs = rnaUtilities.removePseudoknotsFromPairtable(self.pairtable);
+        else
+            self.pseudoknotPairs = [];
 
         return self;
     };
@@ -911,6 +926,8 @@ function rnaPlot() {
         var xExtent = d3.extent(rg.nodes.map(function(d) { return d.x; })) 
         var yExtent = d3.extent(rg.nodes.map(function(d) { return d.y; })) 
 
+        console.log('xs:', rg.nodes.map(function(d) { return d.x; }));
+
         // add the radius of the nucleotides
         xExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
         yExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
@@ -923,8 +940,8 @@ function rnaPlot() {
         var yRange = yExtent[1] - yExtent[0];
 
         // how much wider / taller is it than the available viewport
-        var xExtra = xRange / options.width;
-        var yExtra = yRange / options.height;
+        var xExtra = xRange - options.width;
+        var yExtra = yRange - options.height;
 
         var xScale, yScale;
 
@@ -936,6 +953,8 @@ function rnaPlot() {
             var newWidth = (newDomain[1] - newDomain[0]) * scaleFactor
             var newMargin = ((newRange[1] - newRange[0]) - newWidth) / 2;
 
+            console.log('scaleFactor', scaleFactor);
+
             return {"scaleFactor": scaleFactor, 
                     "scale": d3.scale.linear()
                                      .domain(newDomain)
@@ -943,6 +962,9 @@ function rnaPlot() {
         }
 
         var ret;
+
+        console.log('xRange:', xExtent, 'yRange:', yExtent);
+        console.log('xExtra:', xExtra, 'yExtra:', yExtra);
 
         if (xExtra > yExtra) {
             // we have to shrink more in the x-dimension than the y
@@ -999,6 +1021,8 @@ function rnaPlot() {
     function createLabels(selection, labelNodes) {
         // create groupings for each nucleotide and label
 
+        console.log('labelNodes', labelNodes)
+
         var gs = selection 
         .selectAll('.rnaLabel')
         .data(labelNodes)
@@ -1017,9 +1041,11 @@ function rnaPlot() {
     }
 
     function chart(selection) {
+        console.log('selection', selection)
         selection.each(function(data) {
             // data should be a dictionary containing at least a structure
             // and possibly a sequence
+            console.log('data', data)
             rg = new RNAGraph(data.sequence, data.structure, data.name)
                     .recalculateElements()
                     .elementsToJson();
@@ -1031,6 +1057,8 @@ function rnaPlot() {
             var positions = simpleXyCoordinates(rg.pairtable);
             rg.addPositions('nucleotide', positions)
             .addLabels(options.startNucleotideNumber, options.labelInterval);
+
+            console.log('rg:', rg);
 
             // create a transform that will fit the molecule to the
             // size of the viewport (canvas, svg, whatever)

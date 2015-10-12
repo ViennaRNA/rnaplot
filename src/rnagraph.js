@@ -171,6 +171,7 @@ function ColorScheme(colorsText) {
     };
 
     self.parseColorText(self.colorsText);
+    return self;
 }
 
 function ProteinGraph(structName, size, uid) {
@@ -244,8 +245,10 @@ function RNAGraph(seq, dotbracket, structName) {
     self.nucsToNodes = {};
 
     self.addUids = function(uids) {
-        for (var i = 0; i < uids.length; i++)
-            self.nodes[i].uid = uids[i];
+        var nucleotideNodes = self.nodes.filter(function(d) { return d.nodeType == 'nucleotide'; });
+
+        for (var i = 0; i < uids.length && i < nucleotideNodes.length; i++)
+            nucleotideNodes[i].uid = uids[i];
 
         return self;
     };
@@ -257,7 +260,7 @@ function RNAGraph(seq, dotbracket, structName) {
     self.computePairtable();
 
     self.addPositions = function(nodeType, positions) {
-        labelNodes = self.nodes.filter(function(d) { return d.nodeType == nodeType; });
+        var labelNodes = self.nodes.filter(function(d) { return d.nodeType == nodeType; });
 
         for  (var i = 0; i < labelNodes.length; i++) {
             labelNodes[i].x = positions[i][0];
@@ -382,7 +385,7 @@ function RNAGraph(seq, dotbracket, structName) {
         for (var i = 0; i < nucs.length; i++)
             fakeNodeUid += self.nodes[nucs[i]-1].uid;
 
-        newNode = {'name': '',
+        var newNode = {'name': '',
                          'num': -1,
                          //'radius': 18 * radius -6,
                          'radius': radius,
@@ -403,7 +406,6 @@ function RNAGraph(seq, dotbracket, structName) {
         for (j = 0; j < nucs.length; j++) {
             if (nucs[j] === 0 || nucs[j] > self.dotbracket.length)
                 continue;
-            
 
             //link to the center node
             self.links.push({'source': self.nodes[nucs[j] - 1],
@@ -450,7 +452,6 @@ function RNAGraph(seq, dotbracket, structName) {
         }
 
         return self;
-
     };
 
     self.connectFakeNodes = function() {
@@ -473,7 +474,7 @@ function RNAGraph(seq, dotbracket, structName) {
         for (i = 0; i < fakeNodes.length; i++) {
             var thisNode = fakeNodes[i];
 
-            // each fake node represents a certain set of nucleotdies (thisNode.nucs)
+            // each fake node represents a certain set of nucleotides (thisNode.nucs)
             for (var j = 0; j < thisNode.nucs.length; j++) {
                 var thisNuc = thisNode.nucs[j];
 
@@ -813,9 +814,23 @@ function RNAGraph(seq, dotbracket, structName) {
         return self;
     };
 
+    self.reassignLinkUids = function() {
+        // reassign uids to the links, corresponding to the uids of the two nodes
+        // they connect
+        var i;
+
+        for (i = 0; i < self.links.length; i++) {
+            self.links[i].uid = self.links[i].source.uid + self.links[i].target.uid;
+        }
+
+        return self;
+    }
+
     self.removePseudoknots = function() {
         if (self.pairtable.length > 1)
-            self.pseudoknotPairs = self.pseudoknotPairs.concat(rnaUtilities.removePseudoknotsFromPairtable(self.pairtable));
+            self.pseudoknotPairs = rnaUtilities.removePseudoknotsFromPairtable(self.pairtable);
+        else
+            self.pseudoknotPairs = [];
 
         return self;
     };
