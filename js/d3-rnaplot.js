@@ -503,6 +503,24 @@ function RNAGraph(seq, dotbracket, structName) {
 
     };
 
+    self.addExtraLinks = function(extraLinks) {
+        if (typeof extraLinks == 'undefined')
+            return self;
+
+        for (var i = 0; i < extraLinks.length; i++) {
+            var source = self.getNodeFromNucleotides(extraLinks[i][0]);
+            var target = self.getNodeFromNucleotides(extraLinks[i][1]);
+
+
+            var newLink = {'source': source, 'target': target, 
+                'linkType': 'extra', 'uid': source.uid + target.uid };
+
+            self.links.push(newLink);
+        }
+
+        return self;
+    }
+
     self.elementsToJson = function() {
         /* Convert a set of secondary structure elements to a json
          * representation of the graph that can be used with d3's
@@ -851,6 +869,29 @@ function RNAGraph(seq, dotbracket, structName) {
         return self;
     };
 
+    self.getNodeFromNucleotides = function(nucs) {
+        /* Get a node given a nucleotide number or an array of nucleotide
+         * numbers indicating an element node */
+        if (Object.prototype.toString.call(nucs) === '[object Array]') {
+            for (var j = 0; j < self.nodes.length; j++) {
+                if ('nucs' in self.nodes[j]) {
+                    if (self.nodes[j].nucs.equals(nucs)) {
+                        return self.nodes[j];
+                    }
+                }
+            }
+        } else {
+            for (var j = 0; j < self.nodes.length; j++) {
+                if (self.nodes[j].num == nucs) {
+                    return self.nodes[j];
+                }
+            }
+        }
+
+        console.log('ERROR: No node found for nucs:', nucs);
+        return null;
+    }
+
     if (self.rnaLength > 0)
         self.recalculateElements();
 }
@@ -926,8 +967,6 @@ function rnaPlot() {
         var xExtent = d3.extent(rg.nodes.map(function(d) { return d.x; })) 
         var yExtent = d3.extent(rg.nodes.map(function(d) { return d.y; })) 
 
-        console.log('xs:', rg.nodes.map(function(d) { return d.x; }));
-
         // add the radius of the nucleotides
         xExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
         yExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
@@ -953,8 +992,6 @@ function rnaPlot() {
             var newWidth = (newDomain[1] - newDomain[0]) * scaleFactor
             var newMargin = ((newRange[1] - newRange[0]) - newWidth) / 2;
 
-            console.log('scaleFactor', scaleFactor);
-
             return {"scaleFactor": scaleFactor, 
                     "scale": d3.scale.linear()
                                      .domain(newDomain)
@@ -962,9 +999,6 @@ function rnaPlot() {
         }
 
         var ret;
-
-        console.log('xRange:', xExtent, 'yRange:', yExtent);
-        console.log('xExtra:', xExtra, 'yExtra:', yExtra);
 
         if (xExtra > yExtra) {
             // we have to shrink more in the x-dimension than the y
@@ -1021,8 +1055,6 @@ function rnaPlot() {
     function createLabels(selection, labelNodes) {
         // create groupings for each nucleotide and label
 
-        console.log('labelNodes', labelNodes)
-
         var gs = selection 
         .selectAll('.rnaLabel')
         .data(labelNodes)
@@ -1040,15 +1072,28 @@ function rnaPlot() {
         .classed('number-label', true)
     }
 
+    function createLinks(selection, links) {
+        var gs = selection.selectAll('.rna-link')
+        .data(links)
+        .enter()
+        .append('svg:line')
+        .attr('x1', function(d) { return d.source.x; })
+        .attr('x2', function(d) { return d.target.x; })
+        .attr('y1', function(d) { return d.source.y; })
+        .attr('y2', function(d) { return d.target.y; })
+        .attr('link-type', function(d) { return d.linkType; })
+        .classed('rna-link', true)
+        
+    }
+
     function chart(selection) {
-        console.log('selection', selection)
         selection.each(function(data) {
             // data should be a dictionary containing at least a structure
             // and possibly a sequence
-            console.log('data', data)
             rg = new RNAGraph(data.sequence, data.structure, data.name)
                     .recalculateElements()
-                    .elementsToJson();
+                    .elementsToJson()
+                    .addExtraLinks(data.extraLinks);
 
             data.rnaGraph = rg;
             // calculate the position of each nucleotide
@@ -1057,8 +1102,6 @@ function rnaPlot() {
             var positions = simpleXyCoordinates(rg.pairtable);
             rg.addPositions('nucleotide', positions)
             .addLabels(options.startNucleotideNumber, options.labelInterval);
-
-            console.log('rg:', rg);
 
             // create a transform that will fit the molecule to the
             // size of the viewport (canvas, svg, whatever)
@@ -1078,6 +1121,9 @@ function rnaPlot() {
                 return d.nodeType == 'label';
             });
 
+            var links = rg.links;
+
+            createLinks(gTransform, links);
             createNucleotides(gTransform, nucleotideNodes);            
             createLabels(gTransform, labelNodes);
 

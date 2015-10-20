@@ -4,14 +4,14 @@
     fill: transparent;
 }
 
-circle.rnaBase {
+circle.rna-base {
   stroke: #ccc;
   stroke-width: 1px;
   opacity: 1;
-  fill: transparent;
+  fill: white;
 }
 
-circle.rnaBase.label {
+circle.rna-base.label {
     stroke: transparent;
     stroke-width: 0;
     fill: white;
@@ -22,6 +22,21 @@ line.link {
   stroke-opacity: 0.8;
   stroke-width: 2;
 }
+
+line.rna-link {
+  stroke: #999;
+  stroke-opacity: 0.8;
+  stroke-width: 2;
+}
+
+line.rna-link[link-type="backbone"] {
+    stroke: transparent;
+}
+
+line.rna-link[link-type="basepair"] {
+    stroke: transparent;
+}
+
 
 line.basepair {
   stroke: red;

@@ -503,6 +503,24 @@ function RNAGraph(seq, dotbracket, structName) {
 
     };
 
+    self.addExtraLinks = function(extraLinks) {
+        if (typeof extraLinks == 'undefined')
+            return self;
+
+        for (var i = 0; i < extraLinks.length; i++) {
+            var source = self.getNodeFromNucleotides(extraLinks[i][0]);
+            var target = self.getNodeFromNucleotides(extraLinks[i][1]);
+
+
+            var newLink = {'source': source, 'target': target, 
+                'linkType': 'extra', 'uid': source.uid + target.uid };
+
+            self.links.push(newLink);
+        }
+
+        return self;
+    }
+
     self.elementsToJson = function() {
         /* Convert a set of secondary structure elements to a json
          * representation of the graph that can be used with d3's
@@ -850,6 +868,29 @@ function RNAGraph(seq, dotbracket, structName) {
         self.pseudoknotPairs = [];
         return self;
     };
+
+    self.getNodeFromNucleotides = function(nucs) {
+        /* Get a node given a nucleotide number or an array of nucleotide
+         * numbers indicating an element node */
+        if (Object.prototype.toString.call(nucs) === '[object Array]') {
+            for (var j = 0; j < self.nodes.length; j++) {
+                if ('nucs' in self.nodes[j]) {
+                    if (self.nodes[j].nucs.equals(nucs)) {
+                        return self.nodes[j];
+                    }
+                }
+            }
+        } else {
+            for (var j = 0; j < self.nodes.length; j++) {
+                if (self.nodes[j].num == nucs) {
+                    return self.nodes[j];
+                }
+            }
+        }
+
+        console.log('ERROR: No node found for nucs:', nucs);
+        return null;
+    }
 
     if (self.rnaLength > 0)
         self.recalculateElements();
