@@ -137,6 +137,7 @@ function rnaPlot() {
     }
 
     function createLinks(selection, links) {
+        var links = links.filter(function(d) { return d.source != null && d.target != null; });
         var gs = selection.selectAll('.rna-link')
         .data(links)
         .enter()
@@ -157,7 +158,6 @@ function rnaPlot() {
             rg = new RNAGraph(data.sequence, data.structure, data.name)
                     .recalculateElements()
                     .elementsToJson()
-                    .addExtraLinks(data.extraLinks)
                     .addName(data.name);
 
             data.rnaGraph = rg;
@@ -166,6 +166,9 @@ function rnaPlot() {
             // the addLabels function
             var positions = simpleXyCoordinates(rg.pairtable);
             rg.addPositions('nucleotide', positions)
+            .reinforceStems()
+            .reinforceLoops()
+            .addExtraLinks(data.extraLinks)
             .addLabels(options.startNucleotideNumber, options.labelInterval);
 
             // create a transform that will fit the molecule to the
