@@ -29,6 +29,11 @@ line.rna-link {
   stroke-width: 2;
 }
 
+.rna-name {
+    text-anchor: middle;
+    dy: -10;
+}
+
 line.rna-link[link-type="backbone"] {
     stroke: transparent;
 }

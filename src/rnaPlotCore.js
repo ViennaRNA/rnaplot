@@ -124,6 +124,14 @@ function rnaPlot() {
         .classed('number-label', true)
     }
 
+    function createName(selection, name) {
+        selection.append('svg:text')
+        .attr('transform', 'translate(' + options.width / 2 + ',' + options.height + ')')
+        .attr('dy', -10)
+        .classed('rna-name', true)
+        .text(name);
+    }
+
     function createLinks(selection, links) {
         var gs = selection.selectAll('.rna-link')
         .data(links)
@@ -145,7 +153,8 @@ function rnaPlot() {
             rg = new RNAGraph(data.sequence, data.structure, data.name)
                     .recalculateElements()
                     .elementsToJson()
-                    .addExtraLinks(data.extraLinks);
+                    .addExtraLinks(data.extraLinks)
+                    .name(data.name);
 
             data.rnaGraph = rg;
             // calculate the position of each nucleotide
@@ -178,6 +187,7 @@ function rnaPlot() {
             createLinks(gTransform, links);
             createNucleotides(gTransform, nucleotideNodes);            
             createLabels(gTransform, labelNodes);
+            createName(gTransform, data.name);
 
         });
     }

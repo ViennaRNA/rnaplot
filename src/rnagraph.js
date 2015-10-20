@@ -178,6 +178,7 @@ function ProteinGraph(structName, size, uid) {
     var self = this;
 
     self.type = 'protein';
+    self.name = '';
     self.size = size;
     self.nodes = [{'name': 'P',
                    'num': 1,
@@ -868,6 +869,19 @@ function RNAGraph(seq, dotbracket, structName) {
         self.pseudoknotPairs = [];
         return self;
     };
+
+    self.name = function(name) {
+        if (!arguments)
+            return self.name;
+        else {
+            if (typeof name == 'undefined')
+                return self;
+            else {
+                self.name = name;
+                return self;
+            }
+        }
+    }
 
     self.getNodeFromNucleotides = function(nucs) {
         /* Get a node given a nucleotide number or an array of nucleotide

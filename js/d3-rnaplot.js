@@ -178,6 +178,7 @@ function ProteinGraph(structName, size, uid) {
     var self = this;
 
     self.type = 'protein';
+    self.name = '';
     self.size = size;
     self.nodes = [{'name': 'P',
                    'num': 1,
@@ -869,6 +870,19 @@ function RNAGraph(seq, dotbracket, structName) {
         return self;
     };
 
+    self.name = function(name) {
+        if (!arguments)
+            return self.name;
+        else {
+            if (typeof name == 'undefined')
+                return self;
+            else {
+                self.name = name;
+                return self;
+            }
+        }
+    }
+
     self.getNodeFromNucleotides = function(nucs) {
         /* Get a node given a nucleotide number or an array of nucleotide
          * numbers indicating an element node */
@@ -1072,6 +1086,14 @@ function rnaPlot() {
         .classed('number-label', true)
     }
 
+    function createName(selection, name) {
+        selection.append('svg:text')
+        .attr('transform', 'translate(' + options.width / 2 + ',' + options.height + ')')
+        .attr('dy', -10)
+        .classed('rna-name', true)
+        .text(name);
+    }
+
     function createLinks(selection, links) {
         var gs = selection.selectAll('.rna-link')
         .data(links)
@@ -1093,7 +1115,8 @@ function rnaPlot() {
             rg = new RNAGraph(data.sequence, data.structure, data.name)
                     .recalculateElements()
                     .elementsToJson()
-                    .addExtraLinks(data.extraLinks);
+                    .addExtraLinks(data.extraLinks)
+                    .name(data.name);
 
             data.rnaGraph = rg;
             // calculate the position of each nucleotide
@@ -1126,6 +1149,7 @@ function rnaPlot() {
             createLinks(gTransform, links);
             createNucleotides(gTransform, nucleotideNodes);            
             createLabels(gTransform, labelNodes);
+            createName(gTransform, data.name);
 
         });
     }
