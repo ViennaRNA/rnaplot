@@ -29,9 +29,15 @@ line.rna-link {
   stroke-width: 2;
 }
 
+.overlay {
+    fill: transparent;
+}
+
 .rna-name {
     text-anchor: middle;
     dy: -10;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 8pt;
 }
 
 line.rna-link[link-type="backbone"] {

@@ -216,10 +216,11 @@ function ProteinGraph(structName, size, uid) {
 function RNAGraph(seq, dotbracket, structName) {
     var self = this;
 
+    self.name = '';
     self.type = 'rna';
     self.circularizeExternal = false;
 
-    if (arguments.length == 0) {
+    if (arguments.length === 0) {
         self.seq = '';
         self.dotbracket = '';
         self.structName = '';
@@ -870,18 +871,15 @@ function RNAGraph(seq, dotbracket, structName) {
         return self;
     };
 
-    self.name = function(name) {
-        if (!arguments)
-            return self.name;
-        else {
-            if (typeof name == 'undefined')
-                return self;
-            else {
-                self.name = name;
-                return self;
-            }
+    self.addName = function(name) {
+        if (typeof name == 'undefined') {
+            self.name = '';
+            return self;
+        } else {
+            self.name = name;
+            return self;
         }
-    }
+    };
 
     self.getNodeFromNucleotides = function(nucs) {
         /* Get a node given a nucleotide number or an array of nucleotide

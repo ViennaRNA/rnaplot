@@ -10,6 +10,8 @@ function rnaPlot() {
         "startNucleotideNumber": 1
     };
 
+    var xScale, yScale;
+
     function createTransformToFillViewport(xValues, yValues) {
         // create transform that will scale the x and y values so that
         // they fill the available viewport
@@ -18,6 +20,10 @@ function rnaPlot() {
         // nucleotide so that we can create a scale
         var xExtent = d3.extent(rg.nodes.map(function(d) { return d.x; })) 
         var yExtent = d3.extent(rg.nodes.map(function(d) { return d.y; })) 
+
+        var NAME_OFFSET = 30;
+        if (rg.name != '')
+            yExtent[1] += NAME_OFFSET;
 
         // add the radius of the nucleotides
         xExtent[0] -= options.nucleotideRadius + options.rnaEdgePadding;
@@ -33,8 +39,6 @@ function rnaPlot() {
         // how much wider / taller is it than the available viewport
         var xExtra = xRange - options.width;
         var yExtra = yRange - options.height;
-
-        var xScale, yScale;
 
         // once we have a scale for one dimension, we can create the scale for the other
         // keeping the same expansion / shrinking ratio
@@ -121,12 +125,12 @@ function rnaPlot() {
         .attr('text-anchor', 'middle')
         .attr('font-weight', 'bold')
         .attr('dominant-baseline', 'central')
-        .classed('number-label', true)
+        .classed('number-label', true);
     }
 
     function createName(selection, name) {
         selection.append('svg:text')
-        .attr('transform', 'translate(' + options.width / 2 + ',' + options.height + ')')
+        .attr('transform', 'translate(' + xScale.invert(options.width / 2) + ',' + yScale.invert(options.height) + ')')
         .attr('dy', -10)
         .classed('rna-name', true)
         .text(name);
@@ -142,7 +146,7 @@ function rnaPlot() {
         .attr('y1', function(d) { return d.source.y; })
         .attr('y2', function(d) { return d.target.y; })
         .attr('link-type', function(d) { return d.linkType; })
-        .classed('rna-link', true)
+        .classed('rna-link', true);
         
     }
 
@@ -154,7 +158,7 @@ function rnaPlot() {
                     .recalculateElements()
                     .elementsToJson()
                     .addExtraLinks(data.extraLinks)
-                    .name(data.name);
+                    .addName(data.name);
 
             data.rnaGraph = rg;
             // calculate the position of each nucleotide

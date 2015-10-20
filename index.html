@@ -23,7 +23,7 @@ var svg = d3.select('#rna_ss')
 .append('svg')
 .attr('width', svgWidth)
 .attr('height', svgHeight)
-
+.append('g')
 
 svg.selectAll('.rna')
 .data([rna1])
