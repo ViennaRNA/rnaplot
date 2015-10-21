@@ -12,7 +12,7 @@
 
 <div id='rna_ss'> </div>
 
-<script type='text/javascript' src='/js/d3.min.js'></script>
+<script type='text/javascript' src='/js/lib/d3.min.js'></script>
 <script type='text/javascript' src='/js/d3-rnaplot.js'></script>
 <script type='text/javascript' src='/js/lib/d3-grid.js'></script>
 <script type='text/javascript'>
@@ -22,7 +22,8 @@ var root = [
 {'structure': '((..((....)).(((....))).))',
             'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
             'size': 50,
-            'extraLinks': [[3,10],[1,17]],
+            'extraLinks': [{'from': 3, "to": 14, 'linkType': 'correct'},
+                           {'from': 1, "to": 17, 'linkType': 'correct'}],
             'name': 'blah'},
              {'structure': '((...........(((....))).))',
             'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',

@@ -534,12 +534,14 @@ function RNAGraph(seq, dotbracket, structName) {
             return self;
 
         for (var i = 0; i < extraLinks.length; i++) {
-            var source = self.getNodeFromNucleotides(extraLinks[i][0]);
-            var target = self.getNodeFromNucleotides(extraLinks[i][1]);
+            var source = self.getNodeFromNucleotides(extraLinks[i].from);
+            var target = self.getNodeFromNucleotides(extraLinks[i].to);
 
 
             var newLink = {'source': source, 'target': target, 
-                'linkType': 'extra', 'uid': generateUUID() };
+                'linkType': extraLinks[i].linkType, 'uid': generateUUID() };
+
+                console.log('newLink:', newLink);
 
             self.links.push(newLink);
         }

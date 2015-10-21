@@ -141,38 +141,41 @@ function rnaPlot() {
         var nodesDict = {};
         var linksList = [];
         console.log('links:', links);
-        links = links.filter(function(d) { return d.linkType == 'extra'; });
+        links = links.filter(function(d) { return d.linkType == 'correct' || d.linkType == 'incorrect'; });
 
         for (var i = 0; i < links.length; i++) {
+            if (links[i].source === null || links[i].target === null)
+                continue;
+
             nodesDict[links[i].source.uid] = links[i].source;
             nodesDict[links[i].target.uid] = links[i].target;
 
-            linksList.push({'source': links[i].source.uid, "target": links[i].target.uid}) ;
+            linksList.push({'source': links[i].source.uid, "target": links[i].target.uid, "linkType": links[i].linkType}) ;
         }
 
         var fbundling = d3.ForceEdgeBundling().nodes(nodesDict).edges(linksList)
-        .compatibility_threshold(0.2).step_size(0.2);
+        .compatibility_threshold(0.8).step_size(0.2);
         var results   = fbundling();
 
         console.log('nodesDict:', nodesDict);
-        console.log('linksList:', linksList);
-        console.log('results:', results);
+        console.log('linksList:', linksList.length, linksList);
+        console.log('results:', results.length, results);
 
         var d3line = d3.svg.line()
             .x(function(d){return d.x;})
             .y(function(d){return d.y;})
             .interpolate("linear");
 
-        results.forEach(function(edge_subpoint_data){   
+        for (var i = 0; i < results.length; i++) {
+            var edge_subpoint_data = results[i];
             // for each of the arrays in the results 
             // draw a line between the subdivions points for that edge
 
             selection.append("path").attr("d", d3line(edge_subpoint_data))
-            .style("stroke-width", 1)
-            .style("stroke", "#ff2222")
             .style("fill", "none")
-            .style('stroke-opacity',0.15); //use opacity as blending
-        });
+            .attr('link-type', function(d) { console.log('i:', i); return linksList[i].linkType; })
+            .style('stroke-opacity',0.4); //use opacity as blending
+        }
         
     }
 
