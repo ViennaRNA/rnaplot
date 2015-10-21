@@ -7,7 +7,8 @@ function rnaPlot() {
                                 // nucleotides are from the edge of the plot
         "labelInterval": 0,
         "showNucleotideLabels": true,
-        "startNucleotideNumber": 1
+        "startNucleotideNumber": 1,
+        "bundleExternalLinks": false
     };
 
     var xScale, yScale;
@@ -136,8 +137,29 @@ function rnaPlot() {
         .text(name);
     }
 
+    function makeExternalLinksBundle(links) {
+        var nodesDict = {};
+        var linksList = [];
+        console.log('links:', links);
+        //links = links.filter(function(d) { return d.linkType == 'external'; });
+
+        for (var i = 0; i < links.length; i++) {
+            nodesDict[links[i].source.uid] = links[i].source;
+            nodesDict[links[i].target.uid] = links[i].target;
+
+            linksList.push({'source': links[i].source.uid, "target": links[i].target.uid}) ;
+        }
+
+        var fbundling = d3.ForceEdgeBundling().nodes(nodesDict).edges(linksList);
+        var results   = fbundling();
+
+        console.log('nodesDict:', nodesDict);
+        console.log('linksList:', linksList);
+        console.log('results:', results);
+    }
+
     function createLinks(selection, links) {
-        var links = links.filter(function(d) { return d.source != null && d.target != null; });
+        links = links.filter(function(d) { return d.source !== null && d.target !== null; });
         var gs = selection.selectAll('.rna-link')
         .data(links)
         .enter()
@@ -148,7 +170,6 @@ function rnaPlot() {
         .attr('y2', function(d) { return d.target.y; })
         .attr('link-type', function(d) { return d.linkType; })
         .classed('rna-link', true);
-        
     }
 
     function chart(selection) {
@@ -191,6 +212,10 @@ function rnaPlot() {
 
             var links = rg.links;
 
+            if (options.bundleExternalLinks) {
+                makeExternalLinksBundle(links); 
+            }
+
             createLinks(gTransform, links);
             createNucleotides(gTransform, nucleotideNodes);            
             createLabels(gTransform, labelNodes);
@@ -215,7 +240,7 @@ function rnaPlot() {
         if (!arguments.length) return options.showNucleotideLabels;
         options.showNucleotideLabels = _;
         return chart;
-    }
+    };
 
     chart.rnaEdgePadding = function(_) {
         if (!arguments.length) return options.rnaEdgePadding;
@@ -245,7 +270,13 @@ function rnaPlot() {
         if (!arguments.length) return options.startNucleotideNumber;
         options.startNucleotideNumber = _;
         return chart;
-    }
+    };
+
+    chart.bundleExternalLinks = function(_) {
+        if (!arguments.length) return options.bundleExternalLinks;
+        options.bundleExternalLinks = _;
+        return chart;
+    };
 
     return chart;
 }
