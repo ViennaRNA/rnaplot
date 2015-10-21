@@ -52,6 +52,10 @@ line.rna-link[link-type="fake"] {
     stroke: transparent;
 }
 
+line.rna-link[link-type="extra"] {
+    stroke: transparent;
+}
+
 
 line.basepair {
   stroke: red;

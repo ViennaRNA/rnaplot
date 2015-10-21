@@ -137,11 +137,11 @@ function rnaPlot() {
         .text(name);
     }
 
-    function makeExternalLinksBundle(links) {
+    function makeExternalLinksBundle(selection, links) {
         var nodesDict = {};
         var linksList = [];
         console.log('links:', links);
-        //links = links.filter(function(d) { return d.linkType == 'external'; });
+        links = links.filter(function(d) { return d.linkType == 'extra'; });
 
         for (var i = 0; i < links.length; i++) {
             nodesDict[links[i].source.uid] = links[i].source;
@@ -150,12 +150,30 @@ function rnaPlot() {
             linksList.push({'source': links[i].source.uid, "target": links[i].target.uid}) ;
         }
 
-        var fbundling = d3.ForceEdgeBundling().nodes(nodesDict).edges(linksList);
+        var fbundling = d3.ForceEdgeBundling().nodes(nodesDict).edges(linksList)
+        .compatibility_threshold(0.2).step_size(0.2);
         var results   = fbundling();
 
         console.log('nodesDict:', nodesDict);
         console.log('linksList:', linksList);
         console.log('results:', results);
+
+        var d3line = d3.svg.line()
+            .x(function(d){return d.x;})
+            .y(function(d){return d.y;})
+            .interpolate("linear");
+
+        results.forEach(function(edge_subpoint_data){   
+            // for each of the arrays in the results 
+            // draw a line between the subdivions points for that edge
+
+            selection.append("path").attr("d", d3line(edge_subpoint_data))
+            .style("stroke-width", 1)
+            .style("stroke", "#ff2222")
+            .style("fill", "none")
+            .style('stroke-opacity',0.15); //use opacity as blending
+        });
+        
     }
 
     function createLinks(selection, links) {
@@ -212,14 +230,14 @@ function rnaPlot() {
 
             var links = rg.links;
 
-            if (options.bundleExternalLinks) {
-                makeExternalLinksBundle(links); 
-            }
-
             createLinks(gTransform, links);
             createNucleotides(gTransform, nucleotideNodes);            
             createLabels(gTransform, labelNodes);
             createName(gTransform, data.name);
+
+            if (options.bundleExternalLinks) {
+                makeExternalLinksBundle(gTransform, links); 
+            }
 
         });
     }
