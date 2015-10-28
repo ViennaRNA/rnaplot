@@ -576,14 +576,16 @@ function RNAGraph(seq, dotbracket, structName) {
 
         for (i = 1; i <= pt[0]; i++) {
             //create a node for each nucleotide
-            self.nodes.push({'name': self.seq[i-1],
+            var newNode = {'name': self.seq[i-1],
                              'num': i,
                              'radius': 6,
                              'rna': self,
                              'nodeType': 'nucleotide',
                              'structName': self.structName,
                              'elemType': elemTypes[i],
-                             'uid': generateUUID() });
+                             'uid': generateUUID() }
+            self.nodes.push(newNode);
+            self.nucsToNodes[i] = newNode;
         }
 
 
@@ -909,24 +911,27 @@ function RNAGraph(seq, dotbracket, structName) {
     self.getNodeFromNucleotides = function(nucs) {
         /* Get a node given a nucleotide number or an array of nucleotide
          * numbers indicating an element node */
+        var totalX = 0;
+        var totalY = 0;
+
+        var num = 0;
+
         if (Object.prototype.toString.call(nucs) === '[object Array]') {
-            for (var j = 0; j < self.nodes.length; j++) {
-                if ('nucs' in self.nodes[j]) {
-                    if (self.nodes[j].nucs.equals(nucs)) {
-                        return self.nodes[j];
-                    }
-                }
+            for (var i = 0; i < nucs; i++) {
+                totalX += self.nucsToNodes[nucs[i]].x;
+                totalY += self.nucsToNodes[nucs[i]].y;
+
+                num += 1;
             }
         } else {
-            for (var j = 0; j < self.nodes.length; j++) {
-                if (self.nodes[j].num == nucs) {
-                    return self.nodes[j];
-                }
-            }
+            totalX += self.nucsToNodes[nucs].x;
+            totalY += self.nucsToNodes[nucs].y;
+
+            num = 1
         }
 
-        console.log('ERROR: No node found for nucs:', nucs);
-        return null;
+        var returnNode =  {'x': totalX / num, 'y': totalY / num, 'uid': generateUUID()};
+        return returnNode;
     }
 
     if (self.rnaLength > 0)

@@ -540,8 +540,6 @@ function RNAGraph(seq, dotbracket, structName) {
             var newLink = {'source': source, 'target': target, "linkType": "extra",
                 'extraLinkType': extraLinks[i].linkType, 'uid': generateUUID() };
 
-                console.log('newLink:', newLink);
-
             self.links.push(newLink);
         }
 
@@ -576,14 +574,16 @@ function RNAGraph(seq, dotbracket, structName) {
 
         for (i = 1; i <= pt[0]; i++) {
             //create a node for each nucleotide
-            self.nodes.push({'name': self.seq[i-1],
+            var newNode = {'name': self.seq[i-1],
                              'num': i,
                              'radius': 6,
                              'rna': self,
                              'nodeType': 'nucleotide',
                              'structName': self.structName,
                              'elemType': elemTypes[i],
-                             'uid': generateUUID() });
+                             'uid': generateUUID() }
+            self.nodes.push(newNode);
+            self.nucsToNodes[i] = newNode;
         }
 
 
@@ -909,24 +909,27 @@ function RNAGraph(seq, dotbracket, structName) {
     self.getNodeFromNucleotides = function(nucs) {
         /* Get a node given a nucleotide number or an array of nucleotide
          * numbers indicating an element node */
+        var totalX = 0;
+        var totalY = 0;
+
+        var num = 0;
+
         if (Object.prototype.toString.call(nucs) === '[object Array]') {
-            for (var j = 0; j < self.nodes.length; j++) {
-                if ('nucs' in self.nodes[j]) {
-                    if (self.nodes[j].nucs.equals(nucs)) {
-                        return self.nodes[j];
-                    }
-                }
+            for (var i = 0; i < nucs.length; i++) {
+                totalX += self.nucsToNodes[nucs[i]].x;
+                totalY += self.nucsToNodes[nucs[i]].y;
+
+                num += 1;
             }
         } else {
-            for (var j = 0; j < self.nodes.length; j++) {
-                if (self.nodes[j].num == nucs) {
-                    return self.nodes[j];
-                }
-            }
+            totalX += self.nucsToNodes[nucs].x;
+            totalY += self.nucsToNodes[nucs].y;
+
+            num = 1
         }
 
-        console.log('ERROR: No node found for nucs:', nucs);
-        return null;
+        var returnNode =  {'x': totalX / num, 'y': totalY / num, 'uid': generateUUID()};
+        return returnNode;
     }
 
     if (self.rnaLength > 0)
@@ -1125,7 +1128,6 @@ function rnaPlot() {
     function makeExternalLinksBundle(selection, links) {
         var nodesDict = {};
         var linksList = [];
-        console.log('links:', links);
         links = links.filter(function(d) { return d.linkType == 'correct' || d.linkType == 'incorrect' || d.linkType == 'extra'; });
 
         selection.selectAll('[link-type=extra]')
@@ -1146,10 +1148,6 @@ function rnaPlot() {
         .compatibility_threshold(0.8).step_size(0.2);
         var results   = fbundling();
 
-        console.log('nodesDict:', nodesDict);
-        console.log('linksList:', linksList.length, linksList);
-        console.log('results:', results.length, results);
-
         var d3line = d3.svg.line()
             .x(function(d){return d.x;})
             .y(function(d){return d.y;})
@@ -1160,11 +1158,9 @@ function rnaPlot() {
             // for each of the arrays in the results 
             // draw a line between the subdivions points for that edge
 
-            console.log('linksList[i]', linksList[i]);
-
             selection.append("path").attr("d", d3line(edge_subpoint_data))
             .style("fill", "none")
-            .attr('link-type', function(d) { console.log('i:', i); return linksList[i].linkType; })
+            .attr('link-type', function(d) { return linksList[i].linkType; })
             .attr('extra-link-type', function(d) { return linksList[i].extraLinkType; })
             .style('stroke-opacity',0.4); //use opacity as blending
         }

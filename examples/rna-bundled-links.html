@@ -15,7 +15,7 @@ var svgHeight = 200;
 var rna1 = {'structure': '((..((....)).(((....))).))',
             'sequence': 'CGCUUCAUAUAAUCCUAAUGACCUAU',
             'extraLinks': [ 
-            { 'from': 1, 'to': 20, 'linkType': 'incorrect'}, 
+            { 'from': [1,2], 'to': [20,21], 'linkType': 'incorrect'}, 
             { 'from': 5, 'to': 15}, {'from': 7, 'to': 13 },
             { 'from': 6, 'to': 21}, {'from': 8, 'to': 16}, {'from': 9, 'to': 14},
             { 'from': 10, 'to': 19, 'linkType': 'correct'}]
@@ -24,7 +24,7 @@ var rna1 = {'structure': '((..((....)).(((....))).))',
 var chart = rnaPlot()
 .width(svgWidth)
 .height(svgHeight)
-    .bundleExternalLinks(true);
+.bundleExternalLinks(true)
 
 var svg = d3.select('#rna_ss')
 .append('svg')
