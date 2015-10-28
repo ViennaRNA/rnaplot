@@ -54,7 +54,8 @@ var root = [
               .size([svgWidth, svgHeight])
               .cols(numCols)
               .padding(padding)
-              .nodeSize([cellWidth, cellHeight]);
+              .nodeSize([cellWidth, cellHeight])
+              .bundleExternalLinks(true);
     var rectData = rectGrid(root)
 
     // create an svg as a child of the #rna_ss div

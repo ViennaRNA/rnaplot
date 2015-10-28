@@ -53,7 +53,29 @@ line.rna-link[link-type="fake"] {
 }
 
 line.rna-link[link-type="extra"] {
-    stroke: transparent;
+    stroke: grey;
+}
+
+line.rna-link[extra-link-type="correct"] {
+    stroke: green;
+}
+
+line.rna-link[extra-link-type="incorrect"] {
+    stroke: green;
+}
+
+
+path {
+    stroke: grey;
+  stroke-width: 2;
+}
+
+path[extra-link-type="correct"] {
+    stroke: green;
+}
+
+path[extra-link-type="incorrect"] {
+    stroke: red;
 }
 
 

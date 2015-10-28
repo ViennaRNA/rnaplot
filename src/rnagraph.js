@@ -537,9 +537,8 @@ function RNAGraph(seq, dotbracket, structName) {
             var source = self.getNodeFromNucleotides(extraLinks[i].from);
             var target = self.getNodeFromNucleotides(extraLinks[i].to);
 
-
-            var newLink = {'source': source, 'target': target, 
-                'linkType': extraLinks[i].linkType, 'uid': generateUUID() };
+            var newLink = {'source': source, 'target': target, "linkType": "extra",
+                'extraLinkType': extraLinks[i].linkType, 'uid': generateUUID() };
 
                 console.log('newLink:', newLink);
 

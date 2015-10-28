@@ -537,9 +537,8 @@ function RNAGraph(seq, dotbracket, structName) {
             var source = self.getNodeFromNucleotides(extraLinks[i].from);
             var target = self.getNodeFromNucleotides(extraLinks[i].to);
 
-
-            var newLink = {'source': source, 'target': target, 
-                'linkType': extraLinks[i].linkType, 'uid': generateUUID() };
+            var newLink = {'source': source, 'target': target, "linkType": "extra",
+                'extraLinkType': extraLinks[i].linkType, 'uid': generateUUID() };
 
                 console.log('newLink:', newLink);
 
@@ -1127,7 +1126,11 @@ function rnaPlot() {
         var nodesDict = {};
         var linksList = [];
         console.log('links:', links);
-        links = links.filter(function(d) { return d.linkType == 'correct' || d.linkType == 'incorrect'; });
+        links = links.filter(function(d) { return d.linkType == 'correct' || d.linkType == 'incorrect' || d.linkType == 'extra'; });
+
+        selection.selectAll('[link-type=extra]')
+        .remove();
+
 
         for (var i = 0; i < links.length; i++) {
             if (links[i].source === null || links[i].target === null)
@@ -1136,7 +1139,7 @@ function rnaPlot() {
             nodesDict[links[i].source.uid] = links[i].source;
             nodesDict[links[i].target.uid] = links[i].target;
 
-            linksList.push({'source': links[i].source.uid, "target": links[i].target.uid, "linkType": links[i].linkType}) ;
+            linksList.push({'source': links[i].source.uid, "target": links[i].target.uid, "linkType": links[i].linkType, 'extraLinkType': links[i].extraLinkType}) ;
         }
 
         var fbundling = d3.ForceEdgeBundling().nodes(nodesDict).edges(linksList)
@@ -1157,9 +1160,12 @@ function rnaPlot() {
             // for each of the arrays in the results 
             // draw a line between the subdivions points for that edge
 
+            console.log('linksList[i]', linksList[i]);
+
             selection.append("path").attr("d", d3line(edge_subpoint_data))
             .style("fill", "none")
             .attr('link-type', function(d) { console.log('i:', i); return linksList[i].linkType; })
+            .attr('extra-link-type', function(d) { return linksList[i].extraLinkType; })
             .style('stroke-opacity',0.4); //use opacity as blending
         }
         
@@ -1176,6 +1182,7 @@ function rnaPlot() {
         .attr('y1', function(d) { return d.source.y; })
         .attr('y2', function(d) { return d.target.y; })
         .attr('link-type', function(d) { return d.linkType; })
+        .attr('extra-link-type', function(d) { return d.extraLinkType; })
         .classed('rna-link', true);
     }
 
