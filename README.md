@@ -1,3 +1,14 @@
+# RNAplot #
+
+This package is deprecated and will not be updated!
+
+However, development is continued here: https://github.com/ViennaRNA/fornac
+
+Import the newest version of `RNAplot` from `fornac` like this:
+```
+var chart = fornac.rnaPlot()
+```
+
 ## Usage ##
 
 For a live example, simply load the `index.html` file.
